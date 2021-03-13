@@ -9,16 +9,12 @@ class ImageInput extends StatefulWidget {
 }
 
 class _ImageInputState extends State<ImageInput> {
-  File _storageImage;
- Future<void> takePicture()async{
+  File _selectImage;
+  Future _getImage() async {
     final picker = ImagePicker();
-    PickedFile imageFile = await picker.getImage(source: ImageSource.camera,maxWidth: 600);
+    var image = await picker.getImage(source: ImageSource.camera,);
     setState(() {
-      if (imageFile != null) {
-        _storageImage = File(imageFile.path);
-      } else {
-        print('No image selected.');
-      }
+      _selectImage = File(image.path);
     });
   }
   @override
@@ -32,12 +28,12 @@ class _ImageInputState extends State<ImageInput> {
           child: Container(
             width: 150,height: 150,
             decoration: BoxDecoration(border: Border.all(width: 1,color: Colors.grey)),
-            child: _storageImage != null ?
-            Image.file(_storageImage, fit: BoxFit.cover,width: double.infinity,height: double.infinity,) :Text("What's up"),
+            child: _selectImage != null ?
+            Image.file(_selectImage, fit: BoxFit.cover,width: double.infinity,height: double.infinity,) :Text("What's up"),
             alignment: Alignment.center,
           ),
         ),
-        Expanded(child: FlatButton.icon(onPressed: takePicture, icon: Icon(Icons.camera_alt),label:
+        Expanded(child: FlatButton.icon(onPressed: _getImage, icon: Icon(Icons.camera_alt),label:
         Text("Camera"),color: Theme.of(context).primaryColor,))
       ],
     );

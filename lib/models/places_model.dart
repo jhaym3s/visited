@@ -8,9 +8,7 @@ class PlaceLocation{
   PlaceLocation({
     @required this.latitude, @required this.longitude,this.address
 });
-
 }
-
 class Places{
   final File image;
   final PlaceLocation location;

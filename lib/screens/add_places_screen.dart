@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:places_and_cities/widget/image_input.dart';
+import '../providers/great_places.dart';
+import '../widget/image_input.dart';
+import 'package:provider/provider.dart';
 
 class AddPlacesScreen extends StatefulWidget {
   static const routeName = "addPlacesScreen";
@@ -8,7 +11,21 @@ class AddPlacesScreen extends StatefulWidget {
 }
 
 class _AddPlacesScreenState extends State<AddPlacesScreen> {
+  File _imagePicked;
   final _titleController = TextEditingController();
+  void _selectImage(File pickedImage) {
+    _imagePicked = pickedImage;
+  }
+
+  void _savePlace() {
+    if (_titleController.text.isEmpty || _imagePicked == null) {
+      return;
+    }
+    Provider.of<GreatPlaces>(context,listen: false)
+        .addPlaces(_titleController.text, _imagePicked);
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,26 +33,26 @@ class _AddPlacesScreenState extends State<AddPlacesScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-         Expanded(child:
-         SingleChildScrollView(
-           child: Padding(
-             padding: const EdgeInsets.all(8.0),
-             child: Column(
-               children: [
-         TextField(
-             decoration: InputDecoration(
-               labelText: "title",
-               hintText: "Place you want to add"
-             ),
-             controller: _titleController,
-         ),
-                 ImageInput(),
-               ],
-             ),
-           ),
-         )),
+          Expanded(
+              child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                        labelText: "title", hintText: "Place you want to add"),
+                    controller: _titleController,
+                  ),
+                  ImageInput(_selectImage),
+                ],
+              ),
+            ),
+          )),
           RaisedButton.icon(
-              onPressed: (){}, icon: Icon(Icons.add), label: Text("Add"),
+            onPressed: _savePlace,
+            icon: Icon(Icons.add),
+            label: Text("Add Place"),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             elevation: 0,
             color: Colors.indigoAccent,

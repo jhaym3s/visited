@@ -6,6 +6,10 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as devicePath;
 
 class ImageInput extends StatefulWidget {
+  final Function onSelectImage;
+
+  ImageInput(this.onSelectImage);
+
   @override
   _ImageInputState createState() => _ImageInputState();
 }
@@ -14,14 +18,35 @@ class _ImageInputState extends State<ImageInput> {
   File _selectImage;
   Future _getImage() async {
     final picker = ImagePicker();
-    PickedFile _imageFile = await picker.getImage(source: ImageSource.camera,);
+    PickedFile _imageFile = await picker.getImage(source: ImageSource.camera,maxWidth: 600 );
     setState(() {
       _selectImage = File(_imageFile.path);
     });
     final appDir = await devicePath.getApplicationDocumentsDirectory();
     final tempFileName = path.basename(_imageFile.path);
    final saveImage = await _selectImage.copy('${appDir.path}/$tempFileName');
+   widget.onSelectImage(saveImage);
   }
+  // File _storedImage;
+  //
+  // Future<void> _takePicture() async {
+  //   final picker = ImagePicker();
+  //   final imageFile = await picker.getImage(
+  //     source: ImageSource.camera,
+  //     maxWidth: 600,
+  //   );
+  //   if (imageFile == null) {
+  //     return;
+  //   }
+  //   setState(() {
+  //     _storedImage = File(imageFile.path);
+  //   });
+  //   final appDir = await devicePath.getApplicationDocumentsDirectory();
+  //   final fileName = path.basename(imageFile.path);
+  //   final savedImage = await _storedImage.copy('${appDir.path}/$fileName');
+  //   widget.onSelectImage(savedImage);
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Row(

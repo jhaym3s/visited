@@ -21,21 +21,24 @@ class _PlacesListScreenState extends State<PlacesListScreen> {
               }),
         ],
       ),
-       body: Consumer<GreatPlaces>(
-        child: const Center(child:
-        Text("Share pictures of places you have been to"),),
-        builder: (context, greatPlaces, child) => greatPlaces.places.isEmpty
-            ? child
-            : ListView.builder(
-          itemCount: greatPlaces.places.length,
-                itemBuilder: (context, index) => ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: FileImage(greatPlaces.places[index].image),
-                  ),
-                  title: Text(greatPlaces.places[index].title) ,
-                  onTap: (){},
-                ),),
+       body: FutureBuilder(
+         future: Provider.of<GreatPlaces>(context).fetchData(),
+         builder:(context, snapshot) => snapshot.connectionState == ConnectionState.waiting?Center(child: CircularProgressIndicator()): Consumer<GreatPlaces>(
+          child: const Center(child:
+          Text("Share pictures of places you have been to"),),
+          builder: (context, greatPlaces, child) => greatPlaces.places.isEmpty
+              ? child
+              : ListView.builder(
+            itemCount: greatPlaces.places.length,
+                  itemBuilder: (context, index) => ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: FileImage(greatPlaces.places[index].image),
+                    ),
+                    title: Text(greatPlaces.places[index].title) ,
+                    onTap: (){},
+                  ),),
       ),
+       ),
       backgroundColor: Colors.white,
     );
   }
